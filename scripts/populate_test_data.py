@@ -4,7 +4,8 @@ Populate workbook.xlsx with test data.
 Account numbers are random 7-digit integers.
 """
 import random
-from openpyxl import load_workbook
+import os
+from openpyxl import Workbook
 from openpyxl.worksheet.table import Table, TableStyleInfo
 from datetime import datetime, timedelta
 
@@ -13,11 +14,13 @@ def generate_account_numbers(count=20):
     return [random.randint(1000000, 9999999) for _ in range(count)]
 
 def populate_test_data():
-    wb = load_workbook("workbook.xlsx")
-    ws = wb.active
+    # Remove old workbook if it exists
+    if os.path.exists("workbook.xlsx"):
+        os.remove("workbook.xlsx")
     
-    # Clear existing data
-    ws.delete_rows(1, ws.max_row)
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sheet1"
     
     # Generate random account numbers
     accounts = generate_account_numbers(20)
@@ -144,21 +147,24 @@ def populate_test_data():
     # 9. tblNoteSyncQueue
     ws = wb.create_sheet("Sheet9")
     ws.append(["Queue_ID", "Note_ID", "Operation", "Status", "Queued_Date"])
-    tab = Table(displayName="tblNoteSyncQueue", ref="A1:E1")
+    ws.append(["", "", "", "", ""])  # Empty row to make table valid
+    tab = Table(displayName="tblNoteSyncQueue", ref="A1:E2")
     tab.tableStyleInfo = TableStyleInfo(name="TableStyleMedium2", showFirstColumn=False, showLastColumn=False, showRowStripes=True, showColumnStripes=False)
     ws.add_table(tab)
     
     # 10. tblNoteSyncLog
     ws = wb.create_sheet("Sheet10")
     ws.append(["Log_ID", "Note_ID", "Operation", "Result", "Sync_Date"])
-    tab = Table(displayName="tblNoteSyncLog", ref="A1:E1")
+    ws.append(["", "", "", "", ""])  # Empty row to make table valid
+    tab = Table(displayName="tblNoteSyncLog", ref="A1:E2")
     tab.tableStyleInfo = TableStyleInfo(name="TableStyleMedium2", showFirstColumn=False, showLastColumn=False, showRowStripes=True, showColumnStripes=False)
     ws.add_table(tab)
     
     # 11. tblRangeOverrides
     ws = wb.create_sheet("Sheet11")
     ws.append(["Override_ID", "Account_Number", "Range_Override", "Reason", "Effective_Date"])
-    tab = Table(displayName="tblRangeOverrides", ref="A1:E1")
+    ws.append(["", "", "", "", ""])  # Empty row to make table valid
+    tab = Table(displayName="tblRangeOverrides", ref="A1:E2")
     tab.tableStyleInfo = TableStyleInfo(name="TableStyleMedium2", showFirstColumn=False, showLastColumn=False, showRowStripes=True, showColumnStripes=False)
     ws.add_table(tab)
     
